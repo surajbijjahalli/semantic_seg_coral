@@ -21,17 +21,15 @@ parser.add_argument("--path_annotations",type=str,help="path to sparse annotatio
 
 args = parser.parse_args()
 path_to_img_dir = args.path_img_dir
+path_to_annotation_file = args.path_annotations
 
-folder_name = os.path.basename(os.path.normpath(path_to_img_dir))
 
-
-#path_to_img_dir = "/media/surajb/suraj_drive/datasets-acfr/seaview/IND_CHA/"
 list_imgs = glob.glob(path_to_img_dir+"*.jpg")
 
 rand_sample = random.choice(list_imgs)
 img_name = int(Path(rand_sample).stem)
-#img_name = 21005044102
-path_to_annotation_file = args.path_annotations
+
+
 
 
 
@@ -44,14 +42,11 @@ unique_labels = list(label_dataframe['label'].unique())
 labels = label_dataframe[label_dataframe['quadratid']==img_name]
 labels_coordinates = labels[['x','y']]
 path_to_img = path_to_img_dir+str(img_name)+".jpg"
+
+
 img = plt.imread(path_to_img)
 
-fig,axs = plt.subplots(figsize=(8,8))
-axs.imshow(img)
-axs = sns.scatterplot(data=labels,x=labels['x'], y=labels['y'],hue=labels['label'],s=60)
-axs = sns.move_legend(axs, "upper left", bbox_to_anchor=(1, 1))
-#ax2 = labels.plot.scatter(x='x',y='y',c='label',colormap='viridis')
-#axs.scatter(labels_coordinates[:,0],labels_coordinates[:,1])
+
 
 new_labels = labels.rename(columns={"x": "X", "y": "Y","label": "Label"})
 
@@ -62,6 +57,7 @@ mask = fast_mss(img, new_labels[['X','Y','Label']], unique_labels,
 
                 
 
-# Show the last sample
-display(img, colorize_prediction(mask, unique_labels))
+
+display_overlay(img,colorize_prediction(mask, unique_labels),labels)
+
 

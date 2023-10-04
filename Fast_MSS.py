@@ -86,11 +86,35 @@ def display(a, b):
 
     plt.figure(figsize = (10, 10))
 
-    plt.subplot(1, 2, 1)
+    plt.subplot(1, 3, 1)
     plt.imshow(a)
     
-    plt.subplot(1, 2, 2)
+    plt.subplot(1, 3, 2)
     plt.imshow(b)
+
+    plt.subplot(1,3,3)
+    plt.imshow(a)
+    plt.imshow(b,alpha=0.3)
+
+    plt.show()
+
+
+
+def display_overlay(a, b,labels):
+
+    '''
+    A simple display function that shows the image and mask
+    a & b  -> the actual image, the ground-truth dense annotations or mask
+    '''
+    
+
+    plt.figure(figsize = (10, 10))
+
+    plt.subplot(1,1,1)
+    plt.imshow(a)
+    plt.imshow(b,alpha=0.3)
+    axs = sns.scatterplot(data=labels,x=labels['x'], y=labels['y'],hue=labels['label'],s=60)
+    axs = sns.move_legend(axs, "upper left", bbox_to_anchor=(1, 1))
 
     plt.show()
     
