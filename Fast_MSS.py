@@ -113,7 +113,7 @@ def display_overlay(a, b,labels):
     plt.subplot(1,1,1)
     plt.imshow(a)
     plt.imshow(b,alpha=0.3)
-    axs = sns.scatterplot(data=labels,x=labels['x'], y=labels['y'],hue=labels['label'],s=60)
+    axs = sns.scatterplot(data=labels,x=labels['X'], y=labels['Y'],hue=labels['Label'],s=60)
     axs = sns.move_legend(axs, "upper left", bbox_to_anchor=(1, 1))
 
     plt.show()
