@@ -63,7 +63,7 @@ label_dataframe = pd.read_csv(path_to_annotation_file)
 unique_labels = list(label_dataframe['label'].unique())
 
 # Create dictionary keys for each unique label
-dict_keys = list(np.array(range(len(unique_labels))))
+dict_keys = list(np.array(range(len(unique_labels))).astype(str))
 
 # Create a dictionary of labels
 dict_of_labels = dict(zip(dict_keys,unique_labels))
@@ -127,3 +127,11 @@ print("unique labels: ", unique_labels)
 cv2.imwrite(str(img_name)+'_mask.png',mask)
 
 '''
+
+
+# Create an ID to label mapping - maps integer values to labels
+import json
+# simple example
+id2label = dict_of_labels
+with open('id2label.json', 'w') as fp:
+    json.dump(id2label, fp)
