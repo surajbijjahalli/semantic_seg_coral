@@ -134,7 +134,7 @@ plt.show()
 
 # Create a preprocessor
 # ignore_index is basically the label to be considered background. Optional parameter which may be better off not being provided.
-preprocessor = MaskFormerImageProcessor(ignore_index=0, reduce_labels=False, do_resize=False, do_rescale=False, do_normalize=False)
+preprocessor = MaskFormerImageProcessor(ignore_index=0,reduce_labels=False, do_resize=False, do_rescale=False, do_normalize=False) # previously ignore_index = 0 
 
 # preprocessor also creates a set of binary masks - one mask for each class in the image - This is the format expected for the MaskFormer model
 
@@ -202,7 +202,7 @@ def visualize_mask(labels, label_name):
   return Image.fromarray(visual_mask)
      
 
-visual_mask = visualize_mask(labels, "CCA")
+#visual_mask = visualize_mask(labels, "CCA")
      
 #%%
 #Define model
@@ -243,7 +243,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=5e-5)
 
 running_loss = 0.0
 num_samples = 0
-num_epochs = 2
+num_epochs = 1
 for epoch in range(num_epochs):
   print("Epoch:", epoch)
   model.train()
@@ -297,7 +297,11 @@ for epoch in range(num_epochs):
   
   # NOTE this metric outputs a dict that also includes the mIoU per category as keys
   # so if you're interested, feel free to print them as well
-  print("Mean IoU:", metric.compute(num_labels = len(id2label), ignore_index = 0)['mean_iou'])
+  #print("Mean IoU:", metric.compute(num_labels = len(id2label))['mean_iou']) # removed ignore_index = 0 --> 
+  # Store metrics on the test dataset
+  eval_test_metric = metric.compute(num_labels = len(id2label), ignore_index = 0)
+  print("Mean IoU:", eval_test_metric['mean_iou']) # removed ignore_index = 0
+
 
 #%%
 
@@ -360,3 +364,37 @@ img = img.astype(np.uint8)
 plt.figure(figsize=(15, 10))
 plt.imshow(img)
 plt.show()
+
+#%%
+
+# Evaluate on test data
+'''
+for idx, batch in enumerate(tqdm(test_dataloader)):
+  
+
+    pixel_values = batch["pixel_values"]
+    
+    # Forward pass
+    with torch.no_grad():
+      outputs = model(pixel_values=pixel_values.to(device))
+
+    # get original images
+    original_images = batch["original_images"]
+    target_sizes = [(image.shape[0], image.shape[1]) for image in original_images]
+    # predict segmentation maps
+    predicted_segmentation_maps = preprocessor.post_process_semantic_segmentation(outputs,
+                                                                                  target_sizes=target_sizes)
+
+    # get ground truth segmentation maps
+    ground_truth_segmentation_maps = batch["original_segmentation_maps"]
+
+    metric.add_batch(references=ground_truth_segmentation_maps, predictions=predicted_segmentation_maps)
+    #print("Evals: ",metric.compute(num_labels = len(id2label), ignore_index = 0))
+  # NOTE this metric outputs a dict that also includes the mIoU per category as keys
+  # so if you're interested, feel free to print them as well
+  #print("Mean IoU:", metric.compute(num_labels = len(id2label))['mean_iou']) # removed ignore_index = 0 --> 
+eval_test_metric = metric.compute(num_labels = len(id2label), ignore_index = 0)
+print("Eval outputs: ",eval_test_metric)
+#print("Mean IoU:", metric.compute(num_labels = len(id2label), ignore_index = 0)['mean_iou']) # removed ignore_index = 0
+
+'''

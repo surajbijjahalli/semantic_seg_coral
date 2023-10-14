@@ -100,7 +100,7 @@ def rescale_image(img,labels,new_width):
 
 
 
-rescaled_img,labels = rescale_image(img,labels,200)
+rescaled_img,labels = rescale_image(img,labels,1030)
 
 
 
